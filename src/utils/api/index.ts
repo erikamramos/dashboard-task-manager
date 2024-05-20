@@ -1,8 +1,10 @@
-import axios from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000/api', 
-  timeout: 10000, 
+interface ApiConfig extends AxiosRequestConfig {}
+
+const api: AxiosInstance = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000/api',
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -10,11 +12,14 @@ const api = axios.create({
 
 // Interceptores de petición
 api.interceptors.request.use(
-  (config) => {
+  (config: AxiosRequestConfig) => {
     // Puedes agregar lógica adicional antes de enviar la petición
     const token = localStorage.getItem('token');
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers = {
+        ...config.headers,
+        Authorization: `Bearer ${token}`,
+      };
     }
     return config;
   },
@@ -25,7 +30,7 @@ api.interceptors.request.use(
 
 // Interceptores de respuesta
 api.interceptors.response.use(
-  (response) => {
+  (response: AxiosResponse) => {
     // Puedes agregar lógica adicional para manejar respuestas exitosas
     return response;
   },
@@ -46,9 +51,9 @@ api.interceptors.response.use(
 );
 
 // Función fetchData para realizar peticiones
-const fetchData = async (url, options = {}) => {
+const fetchData = async (url: string, options: AxiosRequestConfig = {}): Promise<any> => {
   try {
-    const response = await api(url, options);
+    const response: AxiosResponse = await api(url, options);
     return response.data;
   } catch (error) {
     console.error('Error retrieving data:', error);
