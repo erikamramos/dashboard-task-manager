@@ -1,3 +1,9 @@
 export interface Task {
-  id: number;
+  code: string;
+  task: string;
+  description: string;
+  status: string;
+  dateInit: string;
+  dateEnd: string;
+  progress: string;
 }
