@@ -15,7 +15,7 @@ const getTasks = async () => {
 };
 
 const getTaskById = async (id: any) => {
-  return fakeData.tasks.find((task: Task) => task.id === id);
+  return fakeData.tasks.find((task: Task) => task.code === id);
 };
 
 module.exports = { getTasks, getTaskById };
