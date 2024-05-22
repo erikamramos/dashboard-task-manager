@@ -8,14 +8,12 @@ import { Task } from "@/interfaces";
 
 // export { getExampleData };
 
-const fakeData = require('../data/fakedata');
+const fakeData = require('../data/fakedata').default;
 
-const getTasks = async () => {
+export const getTasks = async () => {
   return fakeData.tasks;
 };
 
-const getTaskById = async (id: any) => {
+export const getTaskById = async (id: any) => {
   return fakeData.tasks.find((task: Task) => task.code === id);
 };
-
-module.exports = { getTasks, getTaskById };
