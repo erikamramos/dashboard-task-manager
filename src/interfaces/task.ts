@@ -6,5 +6,7 @@ export interface Task {
 	dateInit: string;
 	dateEnd: string;
 	progress: string;
-	subtasks?: any[];
+	subtasks?: any[] | Task[];
+  plannedAmount: string | number;
+  committedAmount: string | number;
 }

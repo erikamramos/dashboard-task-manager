@@ -58,11 +58,12 @@ export default function DashboardPage({}: Props) {
 					const allTabIndex = prevTabs.indexOf("all");
 					const newTabs = [
 						...prevTabs.slice(0, allTabIndex + 1),
-						task.code,
 						...prevTabs.slice(allTabIndex + 1),
+						task.code,
 					];
 					return newTabs;
 				});
+        setCurrentTab(task.code)
 			}
 		}
 	};
@@ -139,13 +140,14 @@ export default function DashboardPage({}: Props) {
 		},
 	];
 
+  const filteredData = currentTab === "all" ? data : data.filter((task) => task.code === currentTab)[0].subtasks;
 
 	// Cambiar el tab al tab recién agregado
-	useEffect(() => {
+	/* useEffect(() => {
 		if (tabs.length > 1) {
 			setCurrentTab(tabs[tabs.length - 1]);
 		}
-	}, [tabs]);
+	}, [tabs]); */
 
 	return (
 		<div className="flex flex-col gap-5  w-full">
@@ -166,31 +168,24 @@ export default function DashboardPage({}: Props) {
 			<CardContent>
 				<div className="p-4 space-y-6">
 					<div className="">
-						<Tabs defaultValue="all" className="h-full space-y-6">
-							<TabsList>
-								{tabs.map((tab) => (
-									<TabsTrigger key={tab} value={tab} className="relative">
-										{tab === "all" ? "All" : tab}
-									</TabsTrigger>
-								))}
-							</TabsList>
-							<TabsContent
-								value="all"
-								className="border-none p-0 outline-none w-full"
-							>
-								<div className="h-[50vh]">
-									<LineChart />
-								</div>
-							</TabsContent>
-							<TabsContent
-								value="PR-105"
-								className="border-none p-0 outline-none w-full"
-							>
-								<div className="h-[50vh]">
-									<LineChartV2 />
-								</div>
-							</TabsContent>
-						</Tabs>
+            <Tabs defaultValue="all" className="h-full space-y-6">
+              <TabsList>
+                {tabs.map((tab) => (
+                  <TabsTrigger key={tab} value={tab} className="relative"  onClick={() => setCurrentTab(tab)}>
+                    {tab === "all" ? "All" : tab}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              {tabs.map((tab) => (
+                <TabsContent key={tab} value={tab} className="border-none p-0 outline-none w-full">
+                  <div className="h-[50vh]">
+                    {tab === "all" ? <LineChart data={data} width={500} height={300} /> : <LineChart data={filteredData} width={500} height={300} /> }
+                    {/* Render content specific to each tab if needed */}
+                  </div>
+                </TabsContent>
+              ))}
+            </Tabs>
+
 					</div>
 				</div>
 			</CardContent>
