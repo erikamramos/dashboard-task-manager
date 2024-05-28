@@ -82,12 +82,20 @@ export default function DashboardPage({}: Props) {
 			header: "Tarea",
 		},
 		{
-			accessorKey: "dateInit",
-			header: "Fecha de Inicio ",
+			accessorKey: "dateInitPlanned",
+			header: "Fecha de Inicio Planeado",
 		},
 		{
-			accessorKey: "dateEnd",
-			header: "Fecha Fin ",
+			accessorKey: "dateEndPlanned",
+			header: "Fecha Fin Planeado",
+		},
+		{
+			accessorKey: "dateInitReal",
+			header: "Fecha de Inicio Actual ",
+		},
+		{
+			accessorKey: "dateEndReal",
+			header: "Fecha Fin Actual",
 		},
 		{
 			accessorKey: "status",
@@ -108,8 +116,12 @@ export default function DashboardPage({}: Props) {
 			},
 		},
 		{
-			accessorKey: "progress",
-			header: "Progreso",
+			accessorKey: "progressPlanned",
+			header: "Progreso Planeado",
+		},
+		{
+			accessorKey: "progressReal",
+			header: "Progreso Actual",
 		},
 		{
 			id: "actions",
@@ -154,10 +166,10 @@ export default function DashboardPage({}: Props) {
 						Editar
 					</Button>
 				</div>
-				<p className="mt-2 text-gray-600">
+				{/* <p className="mt-2 text-gray-600">
 					Lorem Ipsum has been the industrys standard dummy text ever since the
 					1500s, when an unknown printer took a galley of type and scrambled it.
-				</p>
+				</p>*/}
 			</div>
 
 			<CardContent>

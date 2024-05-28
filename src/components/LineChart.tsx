@@ -26,8 +26,8 @@ export default class CustomLineChart extends PureComponent<LineChartProps> {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Line type="monotone" dataKey="committedAmount" stroke="#8884d8" activeDot={{ r: 8 }} />
-          <Line type="monotone" dataKey="plannedAmount" stroke="#54cbc4" activeDot={{ r: 8 }} />
+          <Line name="Monto Real" type="monotone" dataKey="committedAmount" stroke="#8884d8" activeDot={{ r: 8 }} />
+          <Line name="Monto Comprometido" type="monotone" dataKey="plannedAmount" stroke="#54cbc4" activeDot={{ r: 8 }} />
         </LineChart>
       </ResponsiveContainer>
     );
