@@ -27,33 +27,20 @@ export default function DashboardPage({}: Props) {
 	const [currentTab, setCurrentTab] = useState<string>("all");
 	const [tabs, setTabs] = useState<string[]>(["all"]);
 
+	useEffect(() => {
+		const fetchTasks = async () => {
+			const tasks = await getTasks();
+			setData(tasks);
+		};
 
-  useEffect(() => {
-    const fetchTasks = async () => {
-      const tasks = await getTasks();
-      setData(tasks);
-    };
-
-    fetchTasks();
-  }, []);
+		fetchTasks();
+	}, []);
 
 	const addSubtasksToTable = (taskId: string) => {
 		const taskIndex = data.findIndex((task) => task.code === taskId);
 		if (taskIndex !== -1) {
 			const task = data[taskIndex];
 			if (task.subtasks) {
-				const newSubtasks = task.subtasks.map((subtask) => ({
-					...subtask,
-					code: `ST-${subtask.code}`,
-				}));
-
-				const newData = [
-					...data.slice(0, taskIndex + 1),
-					...newSubtasks,
-					...data.slice(taskIndex + 1),
-				];
-
-				setData(newData); // Agregar el nuevo tab "PR-105" después de "All"
 				setTabs((prevTabs) => {
 					const allTabIndex = prevTabs.indexOf("all");
 					const newTabs = [
@@ -63,7 +50,7 @@ export default function DashboardPage({}: Props) {
 					];
 					return newTabs;
 				});
-        setCurrentTab(task.code)
+				setCurrentTab(task.code);
 			}
 		}
 	};
@@ -140,20 +127,28 @@ export default function DashboardPage({}: Props) {
 		},
 	];
 
-  const filteredData = currentTab === "all" ? data : data.filter((task) => task.code === currentTab)[0].subtasks;
-
-	// Cambiar el tab al tab recién agregado
-	/* useEffect(() => {
-		if (tabs.length > 1) {
-			setCurrentTab(tabs[tabs.length - 1]);
+	const getTabData = (tab: string) => {
+		if (tab === "all") {
+			return data;
 		}
-	}, [tabs]); */
+		const task = data.find((task) => task.code === tab);
+		return task?.subtasks || [];
+	};
+
+
+	const getNameTask = (tab: string) => {
+		if (tab === "all") {
+			return data;
+		}
+		const task = data.find((task) => task.code === tab);
+		return task?.task || '';
+	};
 
 	return (
-		<div className="flex flex-col gap-5  w-full">
+		<div className="flex flex-col gap-5 w-full">
 			<div>
 				<div className="flex justify-between items-center">
-					<PageTitle title="Proyecto A" />
+          <h1 className={cn("text-2xl font-semibold")}>Proyecto A {currentTab === "all" ? "" : ` - ${getNameTask(currentTab)}`}</h1>;
 					<Button className="text-sm bg-black text-white py-2 px-4 rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400">
 						<Pencil className="h-4 w-4 mr-2" />
 						Editar
@@ -168,30 +163,72 @@ export default function DashboardPage({}: Props) {
 			<CardContent>
 				<div className="p-4 space-y-6">
 					<div className="">
-            <Tabs defaultValue="all" className="h-full space-y-6">
-              <TabsList>
-                {tabs.map((tab) => (
-                  <TabsTrigger key={tab} value={tab} className="relative"  onClick={() => setCurrentTab(tab)}>
-                    {tab === "all" ? "All" : tab}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-              {tabs.map((tab) => (
-                <TabsContent key={tab} value={tab} className="border-none p-0 outline-none w-full">
-                  <div className="h-[50vh]">
-                    {tab === "all" ? <LineChart data={data} width={500} height={300} /> : <LineChart data={filteredData} width={500} height={300} /> }
-                    {/* Render content specific to each tab if needed */}
-                  </div>
-                </TabsContent>
-              ))}
-            </Tabs>
-
+						<Tabs defaultValue="all" className="h-full space-y-6" value={currentTab}>
+							<TabsList>
+								{tabs.map((tab) => (
+									<TabsTrigger
+										key={tab}
+										value={tab}
+										className="relative"
+										onClick={() => setCurrentTab(tab)}
+									>
+										{tab === "all" ? "All" : tab}
+									</TabsTrigger>
+								))}
+							</TabsList>
+							{tabs.map((tab) => (
+								<TabsContent
+									key={tab}
+									value={tab}
+									className="border-none p-0 outline-none w-full"
+								>
+									<div className="h-[50vh]">
+										{tab === "all" ? (
+											<LineChart data={data} width={500} height={300} />
+										) : (
+											<LineChart data={getTabData(tab)} width={500} height={300} />
+										)}
+									</div>
+								</TabsContent>
+							))}
+						</Tabs>
 					</div>
 				</div>
 			</CardContent>
+
 			<CardContent>
-				<div className="p-4">
-					<DataTable columns={columns} data={data} />
+				<div className="p-4 space-y-6">
+					<div className="">
+						<Tabs defaultValue="all" className="h-full space-y-6" value={currentTab}>
+							<TabsList>
+								{tabs.map((tab) => (
+									<TabsTrigger
+										key={tab}
+										value={tab}
+										className="relative"
+										onClick={() => setCurrentTab(tab)}
+									>
+										{tab === "all" ? "All" : tab}
+									</TabsTrigger>
+								))}
+							</TabsList>
+							{tabs.map((tab) => (
+								<TabsContent
+									key={tab}
+									value={tab}
+									className="border-none p-0 outline-none w-full"
+								>
+									<div>
+										{tab === "all" ? (
+											<DataTable columns={columns} data={data} />
+										) : (
+											<DataTable columns={columns} data={getTabData(tab)} />
+										)}
+									</div>
+								</TabsContent>
+							))}
+						</Tabs>
+					</div>
 				</div>
 			</CardContent>
 		</div>
